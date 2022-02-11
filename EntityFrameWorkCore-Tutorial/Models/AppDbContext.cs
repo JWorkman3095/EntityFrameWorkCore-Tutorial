@@ -10,6 +10,7 @@ namespace EntityFrameWorkCore_Tutorial.Models {
 
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Item> Items { get; set; }
 
         public AppDbContext() { }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}

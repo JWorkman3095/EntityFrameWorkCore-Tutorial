@@ -5,31 +5,46 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace EntityFrameWorkCore_Tutorial {
-
+    
     class Program {
 
         static void Main(string[] args) {
 
             AppDbContext context = new AppDbContext();
 
-            //add a new order for Kroger
-            var  Kroger = context.Customers.SingleOrDefault(c => c.Name.StartsWith("Kr"));
-            var order = new Order() {
-                Id = 0, Description = "4th Order", Total = 2500, CustomerId = Kroger.Id
+            var items = context.Items.ToList();
 
-            };
+            foreach(var i in items) {
+                i.Price = i.Price * (1 + 0.1m);
 
-            context.Orders.Add(order);
+            }
             context.SaveChanges();
 
-            // read al order
-            var orders = context.Orders.Include(x => x.Customer).ToList();
+            items = context.Items.ToList();
 
-            foreach(var o in orders) {
-                Console.WriteLine($"{o.Id,-5}{o.Description,-10}"
-                                    + $"{o.Total,10:c} {o.Customer.Name}");
-                                    
+            foreach (var item in items) {
+                Console.WriteLine($"{item.Id,-5} {item.Code,-10} {item.Name,-15} {item.Price,10:c}");
             }
+
+
+            //add a new order for Kroger
+            //var  Kroger = context.Customers.SingleOrDefault(c => c.Name.StartsWith("Kr"));
+            //var order = new Order() {
+            //    Id = 0, Description = "4th Order", Total = 2500, CustomerId = Kroger.Id
+
+            //};
+
+            //context.Orders.Add(order);
+            //context.SaveChanges();
+
+           
+            //var orders = context.Orders.Include(x => x.Customer).ToList();
+
+            //foreach(var o in orders) {
+            //    Console.WriteLine($"{o.Id,-5}{o.Description,-10}"
+            //                        + $"{o.Total,10:c} {o.Customer.Name}");
+                                    
+            //}
 
             ////delete a customer
             //var amazon = context.Customers.SingleOrDefault(c => c.Name == "Amazon");
