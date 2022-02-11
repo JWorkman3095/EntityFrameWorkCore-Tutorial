@@ -1,4 +1,5 @@
 ﻿using EntityFrameWorkCore_Tutorial.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,32 @@ namespace EntityFrameWorkCore_Tutorial {
 
             AppDbContext context = new AppDbContext();
 
-            //delete a customer
-            var amazon = context.Customers.SingleOrDefault(c => c.Name == "Amazon");
+            //add a new order for Kroger
+            var  Kroger = context.Customers.SingleOrDefault(c => c.Name.StartsWith("Kr"));
+            var order = new Order() {
+                Id = 0, Description = "4th Order", Total = 2500, CustomerId = Kroger.Id
 
-            if(amazon != null) {
-                context.Customers.Remove(amazon);
-                context.SaveChanges();
+            };
+
+            context.Orders.Add(order);
+            context.SaveChanges();
+
+            // read al order
+            var orders = context.Orders.Include(x => x.Customer).ToList();
+
+            foreach(var o in orders) {
+                Console.WriteLine($"{o.Id,-5}{o.Description,-10}"
+                                    + $"{o.Total,10:c} {o.Customer.Name}");
+                                    
             }
+
+            ////delete a customer
+            //var amazon = context.Customers.SingleOrDefault(c => c.Name == "Amazon");
+
+            //if(amazon != null) {
+            //    context.Customers.Remove(amazon);
+            //    context.SaveChanges();
+            //}
 
             //update - changing some data for a customer
             //var max = context.Customers.Find(1);
@@ -41,20 +61,20 @@ namespace EntityFrameWorkCore_Tutorial {
             //Console.WriteLine($"{customer.Name} {customer.Sales:c}");
 
             // read all customers           
-            var customers = from cust in context.Customers
-                                //where cust.Sales < 100000
-                            select cust;
+            //var customers = from cust in context.Customers
+            //                    //where cust.Sales < 100000
+            //                select cust;
 
 
-            //List<Customer> customers = context.Customers
-            //                                    .Where(cust => cust.Sales < 100000)
-            //                                    .ToList();
+            ////List<Customer> customers = context.Customers
+            ////                                    .Where(cust => cust.Sales < 100000)
+            ////                                    .ToList();
 
-            foreach (var customer in customers) {
-                Console.WriteLine($"{customer.Name,-20} {customer.Sales,10:c}");
+            //foreach (var customer in customers) {
+            //    Console.WriteLine($"{customer.Name,-20} {customer.Sales,10:c}");
                 // added formatting with the -20 and 10
                 //}
-            }
+            //}
         }
     }
 }

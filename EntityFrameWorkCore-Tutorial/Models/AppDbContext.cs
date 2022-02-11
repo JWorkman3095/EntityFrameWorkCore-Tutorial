@@ -9,6 +9,7 @@ namespace EntityFrameWorkCore_Tutorial.Models {
     public class  AppDbContext : DbContext {
 
         public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
 
         public AppDbContext() { }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
@@ -22,6 +23,11 @@ namespace EntityFrameWorkCore_Tutorial.Models {
         }
 
         protected override void OnModelCreating(ModelBuilder builder) {
+            // make Cose unique
+            builder.Entity<Item>(
+                e => e.HasIndex(x => x.Code)
+                        .IsUnique(true)
+            );
 
         }
 
